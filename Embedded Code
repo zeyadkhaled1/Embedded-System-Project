@@ -1,3 +1,4 @@
 #include "inc/tm4c123gh6pm.h
 void RGBLED_Init (void){
 SYSCTL_RCGCGPIO |= 0x20;
+while((SYSCTL_PRGPIO_R&0x20)==0){};
