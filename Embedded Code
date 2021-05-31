@@ -28,3 +28,4 @@ GPIO_PORTB_DATA_R=0x00;
 }
 void switch_init(void){
 SYSCTL_RCGCGPIO |= 0x11;
+while((SYSCTL_PRGPIO_R&0x20)==0x011){};
