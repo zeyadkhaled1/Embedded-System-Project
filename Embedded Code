@@ -27,4 +27,4 @@ GPIO_PORTB_PUR_R=0xFF;
 GPIO_PORTB_DATA_R=0x00;
 }
 void switch_init(void){
-SYSCTL_RCGCGPIO |= 0x11;
+SYSCTL_RCGCGPIO |= 0x20;
