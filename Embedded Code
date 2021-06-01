@@ -1,6 +1,8 @@
-#include "inc/tm4c123gh6pm.h
+#include <stdint.h>
+#include <C:\Keil\TExaSware\tm4c123gh6pm.h>
+
 void RGBLED_Init (void){
-SYSCTL_RCGCGPIO |= 0x20;
+SYSCTL_RCGCGPIO_R |= 0x20;
 while((SYSCTL_PRGPIO_R&0x20)==0){};
 GPIO_PORTF_LOCK_R=0x4C4F434B;
 GPIO_PORTF_CR_R|=0x08;
@@ -15,7 +17,7 @@ GPIO_PORTF_DATA_R &=~0x08;
 }
 void lcd_init(void)
 {
-SYSCTL_RCGCGPIO |= 0x0A; //activate port B and D 00001010
+SYSCTL_RCGCGPIO_R |= 0x0A; //activate port B and D 00001010
 while((SYSCTL_PRGPIO_R&0x0A)==0){};
 GPIO_PORTB_CR_R=0xFF;
 GPIO_PORTB_DIR_R=0xFF;
@@ -52,7 +54,7 @@ GPIO_PORTD_DATA_R &=~0x07;
 }
 
 void switch_init(void){
-SYSCTL_RCGCGPIO |= 0x20;
+SYSCTL_RCGCGPIO_R |= 0x20;
 while((SYSCTL_PRGPIO_R&0x01)==0){};
 GPIO_PORTF_LOCK_R=0x4C4F434B;
 GPIO_PORTF_CR_R|=0x01;
@@ -68,15 +70,20 @@ GPIO_PORTB_DATA_R |=0x01 ;  // clear display sceen
 void Return(void)  {
 GPIO_PORTB_DATA_R |=0x02 ;  // Return cursor to home
 }
-void D0 to D7(void) {
+void D0_to_D7(void) {
 GPIO_PORTB_DATA_R|=0x38 ;   // Select 8-Bit Mode of LCD
 }
 void wakeup(void) {
 GPIO_PORTB_DATA_R |=0x30; //
 }
-void increment curso (void) {
+void increment_curso (void) {
 GPIO_PORTB_DATA_R |=0x06;// shift cursor to right
 }
-void Display on (void){
+void Display_on (void){
 GPIO_PORTB_DATA_R |=0x0F;//cursor blinking
+}
+
+int main()
+{
+
 }
