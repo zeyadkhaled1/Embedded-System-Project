@@ -66,5 +66,11 @@ void clear {
 GPIO_PORTB_DATA_R |=0x01 ;  // clear display sceen
 }
 void Return  {
-GPIO_PORTB_DATA_R |=0x02 ;  // Return cursor to home 
+GPIO_PORTB_DATA_R |=0x02 ;  // Return cursor to home
+}
+void D0 to D7 {
+GPIO_PORTB_DATA_R|=0x38 ;   // Select 8-Bit Mode of LCD
+}
+void wakeup {
+GPIO_PORTB_DATA_R |=0x30; //
 }
