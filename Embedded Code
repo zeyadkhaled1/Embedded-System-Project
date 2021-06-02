@@ -1,7 +1,5 @@
-#include <stdint.h>
-#include <C:\Keil\TExaSware\tm4c123gh6pm.h>
-
-void RGBLED_Init (void){
+#include <tm4c123gh6pm.h>
+void RGBLED_Init (char led){
 SYSCTL_RCGCGPIO_R |= 0x20;
 while((SYSCTL_PRGPIO_R&0x20)==0){};
 GPIO_PORTF_LOCK_R=0x4C4F434B;
@@ -9,11 +7,8 @@ GPIO_PORTF_CR_R|=0x08;
 GPIO_PORTF_DIR_R |=0x08;
 GPIO_PORTF_DEN_R |= 0x08;
 GPIO_PORTF_AMSEL_R &=~0x08;
-GPIO_PORTF_PCTL_R &=~0x0000F000 ;
-GPIO_PORTF_AFSEL_R &=~0x08;
-GPIO_PORTF_AFSEL_R &=~0x08;
 GPIO_PORTF_PCTL_R &= ~0x0000F000;
-GPIO_PORTF_DATA_R &=~0x08;
+GPIO_PORTF_DATA_R |=led;
 }
 void lcd_init(void)
 {
@@ -27,21 +22,6 @@ GPIO_PORTB_DEN_R=0xFF;
 GPIO_PORTB_AMSEL_R=0x00;
 GPIO_PORTB_PUR_R=0xFF;
 GPIO_PORTB_DATA_R=0x00;
-}
-/*void lcd_command(char command){
-GPIO_PORTD_DATA_R&=~0xFB// lcd read data and the type of data are command
-GPIO_PORTB_DATA_R=command ;// to send the value of command (clear,wake up ,display on )
-delay();
-GPIO_PORTD_DATA_R&=~0xFA// to change latch (covert enable from 1 to 0 vice versa)
-}
-PORT D 0 0 0 0 0 Rs RW E ........11111011>>>>>TO set RS
-PORT D 0 0 0 0 0 Rs RW E.........11111010>>>>>>to set E(enable)
-void lcd_DATA(char DATA){
-GPIO_PORTD_DATA_R&=~FA
-GPIO_PORTB_DATA_R=DATA ;
-dalay();
-GPIO_PORTD_DATA_R&=~FB
-}
 //PORD D initialize
 GPIO_PORTD_LOCK_R= 0x4C4F434B;
 GPIO_PORTD_CR_R|=0x07;
@@ -53,7 +33,29 @@ GPIO_PORTD_AMSEL_R &=~0x07;
 GPIO_PORTD_PUR_R &=~0x07;
 GPIO_PORTD_DATA_R &=~0x07;
 }
-*/
+void delay_func(void)
+{ 
+  for(int i=1;i<20 ; i++)
+  {
+  i=i+0;
+  }
+  }
+void lcd_command(char command){
+GPIO_PORTD_DATA_R &=~0x06 ;// clear RS & RW 00000110
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
+GPIO_PORTB_DATA_R =command ;// to send the value of command (clear,wake up ,display on )
+delayMicroseconds(45);
+GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
+}
+
+void lcd_DATA(char DATA){
+GPIO_PORTD_DATA_R &=~0x04 ; // set Rs=1 to read data 
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
+GPIO_PORTB_DATA_R =DATA ;
+delayMicroseconds(45);
+GPIO_PORTD_DATA_R&=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
+}
+
 void switch_init(void){
 SYSCTL_RCGCGPIO_R |= 0x20;
 while((SYSCTL_PRGPIO_R&0x01)==0){};
@@ -65,33 +67,64 @@ GPIO_PORTF_AMSEL_R &=~0x01;
 GPIO_PORTF_PCTL_R &=~0x0000000F;
 GPIO_PORTF_PUR_R |= 0x01;
 }
-void clear(void) {
-GPIO_PORTD_DATA_R &=~ 0x06; // RS=0 & RW=0
-GPIO_PORTB_DATA_R |=0x01 ;  // clear display sceen
+/*
+void clear1(void) {
+GPIO_PORTD_DATA_R &=~0x06 ;// clear RS & RW 00000110
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1111
+GPIO_PORTB_DATA_R =0x01 ;// to send the value of command (clear,wake up ,display on )
+delay_func();
+GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
 }
 void Return(void)  {
-GPIO_PORTD_DATA_R &=~ 0x06; // RS=0 & RW=0
-GPIO_PORTB_DATA_R |=0x02 ;  // Return cursor to home
+GPIO_PORTD_DATA_R &=~0x06 ;// clear RS & RW 00000110
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
+GPIO_PORTB_DATA_R =0x02 ;// to send the value of command (clear,wake up ,display on )
+delay_func();
+GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)home
 }
 void D0_to_D7(void) {
-GPIO_PORTD_DATA_R &=~ 0x06; // RS=0 & RW=0
-GPIO_PORTB_DATA_R|=0x38 ;   // Select 8-Bit Mode of LCD
+GPIO_PORTD_DATA_R &=~0x06 ;// clear RS & RW 00000110
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
+GPIO_PORTB_DATA_R =0x38 ;// to send the value of command (clear,wake up ,display on )
+delay_func();
+GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
 }
-void wakeup(void) {
-GPIO_PORTD_DATA_R &=~ 0x06; // RS=0 & RW=0
-GPIO_PORTB_DATA_R |=0x30; //
+void wakeup1(void) {
+GPIO_PORTD_DATA_R &=~0x06 ; // clear RS & RW 00000110
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
+GPIO_PORTB_DATA_R =0x30 ;// to send the value of command (clear,wake up ,display on )
+delay_func();
+GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
 }
 void increment_curso (void) {
-GPIO_PORTD_DATA_R &=~ 0x06; // RS=0 & RW=0
-GPIO_PORTB_DATA_R |=0x06;// shift cursor to right
+GPIO_PORTD_DATA_R &=~0x06;// clear RS & RW 00000110
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
+GPIO_PORTB_DATA_R =0x06 ;// to send the value of command (clear,wake up ,display on )
+delay_func();
+GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
 }
 void Display_on (void){
-GPIO_PORTD_DATA_R &=~ 0x06; // RS=0 & RW=0
-GPIO_PORTB_DATA_R |=0x0F;//cursor blinking
-}
+GPIO_PORTD_DATA_R &=~0x06;// clear RS & RW 00000110
+GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
+GPIO_PORTB_DATA_R =0x0f ;// to send the value of command (clear,wake up ,display on )
+delay_func();
+GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
+}*/
 
-int main()
-{
-GPIO_PORTD_DATA_R |=0x01;
+void setup() {}
+  // put your setup code here, to run once:
+
+
+void loop() {
+  // put your main code here, to run repeatedly: 
+lcd_init();
+RGBLED_Init(0x04);
+
+lcd_command(0x30);
+lcd_command(0x0F);
+lcd_command(0x38);
+lcd_command(0x01);
+lcd_command(0x06);
+lcd_DATA (0x0A);
 
 }
