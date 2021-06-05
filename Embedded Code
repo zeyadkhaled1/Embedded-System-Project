@@ -127,12 +127,16 @@ lcd_command(0x01);
 lcd_command(0x06);
 lcd_DATA (0x0A);
 
+/////////////////for the switch
 }
-if (distance>100){
-GPIO_PORTF_DATA-R|=0X00;   // switch on
-GPIO_PORTF_DATA-R|-0x08;   // green led on
-else{
-GPIO_PORTF_DATA-R|=0x01;   //switch off
-GPIO_PORTF_DATA-R|=0X00;   // green led off 
-}
+if (GPIO_PORTF_DATA_R !=0x01 )   // if switch 0 is on
+ { if ( distance > 100 )
+     {GPIO_PORTF_DATA_R =0x08;
+			 delay_ms(2000);
+			 GPIO_PORTF_DATA_R &=~0x08;
+		 }  // green led on
+    else GPIO_PORTF_DATA_R &=~0x08;
+	 }
+else GPIO_PORTF_DATA_R &=~0x08;
+
 }
