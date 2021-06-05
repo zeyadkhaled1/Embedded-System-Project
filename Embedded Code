@@ -34,7 +34,7 @@ GPIO_PORTD_PUR_R &=~0x07;
 GPIO_PORTD_DATA_R &=~0x07;
 }
 void delay_func(void)
-{ 
+{
   for(int i=1;i<20 ; i++)
   {
   i=i+0;
@@ -49,7 +49,7 @@ GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice v
 }
 
 void lcd_DATA(char DATA){
-GPIO_PORTD_DATA_R &=~0x04 ; // set Rs=1 to read data 
+GPIO_PORTD_DATA_R &=~0x04 ; // set Rs=1 to read data
 GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
 GPIO_PORTB_DATA_R =DATA ;
 delayMicroseconds(45);
@@ -116,7 +116,7 @@ void setup() {}
 
 
 void loop() {
-  // put your main code here, to run repeatedly: 
+  // put your main code here, to run repeatedly:
 lcd_init();
 RGBLED_Init(0x04);
 
@@ -127,4 +127,12 @@ lcd_command(0x01);
 lcd_command(0x06);
 lcd_DATA (0x0A);
 
+}
+if (distance>100){
+GPIO_PORTF_DATA-R|=0X00;   // switch on
+GPIO_PORTF_DATA-R|-0x08;   // green led on
+else{
+GPIO_PORTF_DATA-R|=0x01;   //switch off
+GPIO_PORTF_DATA-R|=0X00;   // green led off 
+}
 }
