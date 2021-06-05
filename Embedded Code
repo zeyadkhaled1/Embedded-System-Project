@@ -28,23 +28,19 @@ GPIO_PORTB_DEN_R=0xFF;
 GPIO_PORTB_AMSEL_R=0x00;
 GPIO_PORTB_PUR_R=0xFF;
 GPIO_PORTB_DATA_R=0x00;
-//PORD D initialize
-GPIO_PORTD_LOCK_R= 0x4C4F434B;
-GPIO_PORTD_CR_R|=0x07;
-GPIO_PORTD_DIR_R|=0x07;
-GPIO_PORTD_AFSEL_R &=~0x07;
-GPIO_PORTD_PCTL_R &=~0x0000FFF;
-GPIO_PORTD_DEN_R|=0x07;
-GPIO_PORTD_AMSEL_R &=~0x07;
-GPIO_PORTD_PUR_R &=~0x07;
-GPIO_PORTD_DATA_R &=~0x07;
 }
-void delay_func(void)
-{
-  for(int i=1;i<20 ; i++)
-  {
-  i=i+0;
-  }
+void delay_ms(int n){
+int i,j;
+for(i=0;i<n;i++)
+for(j=0;j<3180;j++)
+{}
+}
+ void delay_us(int n){
+int i,j;
+for(i=0;i<n;i++)
+for(j=0;j<3;j++)
+{}
+}
   }
 void lcd_command(char command){
 GPIO_PORTD_DATA_R &=~0x06 ;// clear RS & RW 00000110
