@@ -60,19 +60,19 @@ for(j=0;j<3;j++)
 {}
 }
   }
-void LCD_command(char command){
-GPIO_PORTA_DATA_R =0x00 ; // CLEAR RS
-GPIO_PORTB_DATA_R =command  //SEND DATA
-GPIO_PORTA_DATA_R =0x50 ; // SET EN
-delay_us(0);
- GPIO_PORTA_DATA_R =0x03 ; //CLEAR EN
-	if (command < 4)
-delay_ms(2); // command 1 and 2 needs up to 1.64ms */
-else
-delay_us(20); // all others 40 us */
+  void LCD_command(char command){
 
-}
+  GPIO_PORTA_DATA_R =0x00 ; // CLEAR RS
+  GPIO_PORTB_DATA_R =command ; //SEND DATA
+  GPIO_PORTA_DATA_R =0x40 ; // SET EN
+  delay_us(0);
+   GPIO_PORTA_DATA_R =0x00 ; //CLEAR EN
+  	if (command < 4)
+  delay_ms(2); // command 1 and 2 needs up to 1.64ms */
+  else
+  delay_us(40); // all others 40 us */
 
+  }
 void lcd_DATA(char DATA){
 GPIO_PORTA_DATA_R =0x80 ; // RS = 1 FOR DATA
 GPIO_PORTB_DATA_R =DATA ;
