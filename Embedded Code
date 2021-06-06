@@ -2,9 +2,18 @@
 #include "stdint.h"
 #include "math.h"
 void SystemInit() {};
-/**********************************************************/
-
-
+/**********************prototypes************************************/
+void RGBLED_Init (void);
+void lcd_init(void);
+void delay_ms(int n);
+void delay_us(int n);
+void LCD_command(char command);
+void LCD_data(char DATA);
+void switch_init(void);
+void DistToChar(int dist);
+	
+	/**********************************************************/
+	
 void RGBLED_Init (void)
 {
 SYSCTL_RCGCGPIO_R |= 0x20;
@@ -67,7 +76,7 @@ for(i=0;i<n;i++)
 for(j=0;j<3;j++)
 {}
 }
-  }
+  
 
 /****************************************************/
   void LCD_command(char command){
@@ -85,7 +94,7 @@ for(j=0;j<3;j++)
   }
 
 /**************************************/
-void lcd_DATA(char DATA){
+void LCD_data(char DATA){
 GPIO_PORTA_DATA_R =0x80 ; // RS = 1 FOR DATA
 GPIO_PORTB_DATA_R =DATA ;
 GPIO_PORTA_DATA_R |=0x40 ; // SET EN
@@ -141,7 +150,7 @@ int main()
  
 RGBLED_Init();
 switch_init();
-LCD_init();
+lcd_init();
 LCD_command(0X01);	// clear display 
 delay_ms(10);
 LCD_command(0x80);  // LCD cursor location 
@@ -159,6 +168,7 @@ LCD_data('=');
 	int distance =350; //initialize random distance
 	LCD_command(0x85); // set the location 
 	DistToChar(distance);
+		delay_ms(500);
 	
       
         if ( distance > 100 )
