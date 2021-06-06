@@ -60,12 +60,17 @@ for(j=0;j<3;j++)
 {}
 }
   }
-void lcd_command(char command){
-GPIO_PORTD_DATA_R &=~0x06 ;// clear RS & RW 00000110
-GPIO_PORTD_DATA_R |=0x01 ; // set enable =1
-GPIO_PORTB_DATA_R =command ;// to send the value of command (clear,wake up ,display on )
-delayMicroseconds(45);
-GPIO_PORTD_DATA_R &=~0x01 ; // to change latch (covert enable from 1 to 0 vice versa)
+void LCD_command(char command){
+GPIO_PORTA_DATA_R =0x00 ; // CLEAR RS
+GPIO_PORTB_DATA_R =command  //SEND DATA
+GPIO_PORTA_DATA_R =0x50 ; // SET EN
+delay_us(0);
+ GPIO_PORTA_DATA_R =0x03 ; //CLEAR EN
+	if (command < 4)
+delay_ms(2); // command 1 and 2 needs up to 1.64ms */
+else
+delay_us(20); // all others 40 us */
+
 }
 
 void lcd_DATA(char DATA){
