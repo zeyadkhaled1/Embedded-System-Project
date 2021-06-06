@@ -1,22 +1,25 @@
 #include "C:\Keil/Labware/tm4c123gh6pm.h"
 #include "stdint.h"
 #include "math.h"
+void SystemInit() {};
+/**********************************************************/
 
-void SystemInit() {
-};
 
-void RGBLED_Init (char led){
+void RGBLED_Init (void)
+{
 SYSCTL_RCGCGPIO_R |= 0x20;
 while((SYSCTL_PRGPIO_R&0x20)==0){};
 GPIO_PORTF_LOCK_R=0x4C4F434B;
-GPIO_PORTF_CR_R|=led;
-GPIO_PORTF_DIR_R |=led;
-GPIO_PORTF_DEN_R |= led;
-GPIO_PORTF_AMSEL_R &=~led;
+GPIO_PORTF_CR_R|=0x0E;
+GPIO_PORTF_DIR_R |=0x0E;
+GPIO_PORTF_DEN_R |= 0x0E;
+GPIO_PORTF_AMSEL_R &=~0x0E;
 GPIO_PORTF_PCTL_R &= ~0x0000FFF0;
-GPIO_PORTF_DATA_R |=led;
+
 }
-void LCD_init(void)
+
+/*******************************************************/
+void lcd_init(void)
 {
 SYSCTL_RCGCGPIO_R |= 0x03; //activate port B and A   00000011
 while((SYSCTL_PRGPIO_R&0x03)==0){};
@@ -27,7 +30,7 @@ GPIO_PORTB_PCTL_R=0x00000000;
 GPIO_PORTB_DEN_R=0xFF;
 GPIO_PORTB_AMSEL_R=0x00;
 GPIO_PORTB_DATA_R=0x00;
-//PORD A initialize FOR EN & RS
+//PORD A initialize FOR EN & RS ---> RW is connected to ground to be always = 0
 GPIO_PORTA_CR_R|=0xC0;
 GPIO_PORTA_DIR_R|=0xC0;
 GPIO_PORTA_AFSEL_R &=~0xC0;
@@ -35,17 +38,22 @@ GPIO_PORTA_PCTL_R &=~0xFF00000;
 GPIO_PORTA_DEN_R|=0xC0;
 GPIO_PORTA_AMSEL_R &=~0xC0;
 GPIO_PORTA_DATA_R &=~0xC0;
-delay_ms(20); /* initialization sequence */
+delay_ms(20);
+
+ //initialization sequence 
+
 LCD_command(0x30);
 delay_ms(5);
 LCD_command(0x30);
 delay_us(100);
 LCD_command(0x30);
-LCD_command(0x38); /* set 8-bit data, 2-line, 5x7 font */
-LCD_command(0x06); /* move cursor right */
-LCD_command(0x01); /* clear screen, move cursor to home */
+LCD_command(0x38); // set 8-bit data, 2-line, 5x7 font 
+LCD_command(0x06); // move cursor right 
+LCD_command(0x01); // clear screen, move cursor to home 
 
 }
+
+/********************************************/
 
 void delay_ms(int n){
 int i,j;
@@ -60,6 +68,8 @@ for(j=0;j<3;j++)
 {}
 }
   }
+
+/****************************************************/
   void LCD_command(char command){
 
   GPIO_PORTA_DATA_R =0x00 ; // CLEAR RS
@@ -73,6 +83,8 @@ for(j=0;j<3;j++)
   delay_us(40); // all others 40 us */
 
   }
+
+/**************************************/
 void lcd_DATA(char DATA){
 GPIO_PORTA_DATA_R =0x80 ; // RS = 1 FOR DATA
 GPIO_PORTB_DATA_R =DATA ;
@@ -82,6 +94,8 @@ GPIO_PORTA_DATA_R =0x00 ; //CLEAR EN to change latch (covert enable from 1 to 0 
 delay_us(40);
 
 }
+
+/************************************************/
 
 void switch_init(void){
 SYSCTL_RCGCGPIO_R |= 0x20;
@@ -95,30 +109,64 @@ GPIO_PORTF_PCTL_R &=~0x0000000F;
 GPIO_PORTF_PUR_R |= 0x01;
 }
 
+/**************************************/
+
+void DistToChar(int dist) // to convert numbers to characters to print on LCD
+{
+        int k;
+	int l;
+	int j=0;
+	int arr[4];
+	while(dist>0)
+	{
+		
+	arr[j] = dist%10 ;
+		dist=dist/10;
+		j++;
+	}
+	
+	for (k=j-1 ; k>=0 ; k--)
+	{
+	 l=arr[k]+48;
+		LCD_data(l);
+		delay_ms(10);
+	}
+	
+}
+
+/************************************************/
 
 int main()
 {
-  // put your main code here, to run repeatedly:
-lcd_init();
-RGBLED_Init(0x04);
+ 
+RGBLED_Init();
+switch_init();
+LCD_init();
+LCD_command(0X01);	// clear display 
+delay_ms(10);
+LCD_command(0x80);  // LCD cursor location 
+delay_ms(500);
+LCD_data('D');
+LCD_data('I');
+LCD_data('S');
+LCD_data('T');
+LCD_data('=');
+	
+	
+	/******loop to keep the distance up to date**********/
+	while(1)
+	{
+	int distance =350; //initialize random distance
+	LCD_command(0x85); // set the location 
+	DistToChar(distance);
+	
+      
+        if ( distance > 100 )
+       {GPIO_PORTF_DATA_R =0x08; }  // green led on
 
-lcd_command(0x30);
-lcd_command(0x0F);
-lcd_command(0x38);
-lcd_command(0x01);
-lcd_command(0x06);
-lcd_DATA (0x0A);
-
-/////////////////for the switch
-
-if (GPIO_PORTF_DATA_R !=0x01 )   // if switch 0 is on
- { if ( distance > 100 )
-     {GPIO_PORTF_DATA_R =0x08;
-			 delay_ms(2000);
-			 GPIO_PORTF_DATA_R &=~0x08;
-		 }  // green led on
-    else GPIO_PORTF_DATA_R &=~0x08;
+       else GPIO_PORTF_DATA_R &=~0x08;
 	 }
-else GPIO_PORTF_DATA_R &=~0x08;
 
 }
+
+	
