@@ -15,9 +15,9 @@ void LCD_command(char command);
 void LCD_data(char DATA);
 void switch_init(void);
 void DistToChar(int dist);
-	
+
 	/**********************************************************/
-	
+
 void RGBLED_Init (void)
 {
 SYSCTL_RCGCGPIO_R |= 0x20;
@@ -53,16 +53,16 @@ GPIO_PORTA_AMSEL_R &=~0xC0;
 GPIO_PORTA_DATA_R &=~0xC0;
 delay_ms(20);
 
- //initialization sequence 
+ //initialization sequence
 
 LCD_command(0x30);
 delay_ms(5);
 LCD_command(0x30);
 delay_us(100);
 LCD_command(0x30);
-LCD_command(0x38); // set 8-bit data, 2-line, 5x7 font 
-LCD_command(0x06); // move cursor right 
-LCD_command(0x01); // clear screen, move cursor to home 
+LCD_command(0x38); // set 8-bit data, 2-line, 5x7 font
+LCD_command(0x06); // move cursor right
+LCD_command(0x01); // clear screen, move cursor to home
 
 }
 
@@ -80,7 +80,7 @@ for(i=0;i<n;i++)
 for(j=0;j<3;j++)
 {}
 }
-  
+
 
 /****************************************************/
   void LCD_command(char command){
@@ -132,49 +132,49 @@ void DistToChar(int dist) // to convert numbers to characters to print on LCD
 	int arr[4];
 	while(dist>0)
 	{
-		
+
 	arr[j] = dist%10 ;
 		dist=dist/10;
 		j++;
 	}
-	
+
 	for (k=j-1 ; k>=0 ; k--)
 	{
 	 l=arr[k]+48;
 		LCD_data(l);
 		delay_ms(10);
 	}
-	
+
 }
 
 /*********************************************************************/
 
 int main()
 {
- 
+
 RGBLED_Init();
 switch_init();
 lcd_init();
-LCD_command(0X01);	// clear display 
+LCD_command(0X01);	// clear display
 delay_ms(10);
-LCD_command(0x80);  // LCD cursor location 
+LCD_command(0x80);  // LCD cursor location
 delay_ms(500);
 LCD_data('D');
 LCD_data('I');
 LCD_data('S');
 LCD_data('T');
 LCD_data('=');
-	
-	
+
+
 	/******loop to keep the distance up to date**********/
 	while(1)
 	{
 	int distance =350; //initialize random distance
-	LCD_command(0x85); // set the location 
+	LCD_command(0x85); // set the location
 	DistToChar(distance);
 		delay_ms(500);
-	
-      
+
+
         if ( distance > 100 )
        {GPIO_PORTF_DATA_R =0x08; }  // green led on
 
@@ -182,5 +182,13 @@ LCD_data('=');
 	 }
 
 }
-
-	
+void gps_init(void)
+{
+SYSCTL_RCGCGPIO_R |= 0x08;
+SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
+ /* enable clock to PORTD  */  //FEDCBA
+ delay_us(1);
+  /* UART0 initialization */
+  UART2_CTL_R = 0;         /* UART5 module disbable */
+  UART2_IBRD_R = 104;     /* 16MHz/16=1MHz, 1MHz/104=9600 baud rate */
+  UART2_FBRD_R = 11;      /* fraction part of baud generator register*/
