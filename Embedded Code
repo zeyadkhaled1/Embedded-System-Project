@@ -6,21 +6,7 @@
 #include "stdio.h"
 #include "string.h"
 void SystemInit() {};
-#define pi  3.1415926535897932846
-int Total_Distance;
-double Latitude[2] = {0.0 , 0.0} ;
-double Longitude[2] = {0.0 , 0.0} ;
-int f = 0 ;
-double theta;
-double dist;
-double lati;
-double longi;
-double latitude;
-double longitude;
-int degree;
-double min;
-int degree2;
-double min2;
+
 /**********************prototypes************************************/
 void RGBLED_Init (void);
 void lcd_init(void);
@@ -178,6 +164,11 @@ SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
 	UART2_CC_R = 0;          /*select system clock*/
   UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
   UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
+	GPIO_PORTD_AFSEL_R = 0xC0;     /* Use PD6,PD7 alternate function */
+  GPIO_PORTD_PCTL_R = 0x11000000;  /* configure PD6 and PD7 for UART */
+  GPIO_PORTD_DEN_R = 0xC0;           /* set PD6 and PD7 as digital */
+  GPIO_PORTD_AMSEL_R =0;         /* Turn off analog function*/
+  delay_us(1);
 
 
   /*******************************GPS READ***************************/
@@ -200,7 +191,7 @@ int stop;
 
 
 void ReadGpsModule(void){
-	
+
 
 	Read_Data();
 
@@ -228,21 +219,21 @@ while (data!=',') {Read_Data();};
        j=0;}
 		  else if (data=='*')
 			{stop=1;}
-		
+
 			else
-				
+
 			{	DATA[i][j]=data;
 			 j++;
 			}
-			
+
 		}
-	
+
 	for (i=0;i<10; i++)
 	{
-		
+
 		lat1 [i]=DATA[0][i];
 		lon1 [i]=DATA[2][i];
-		
+
 	}
 	lati =strtod(lat1,&ptr);
 	longi =strtod(lon1,&ptr);
