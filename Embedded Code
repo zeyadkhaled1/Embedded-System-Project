@@ -6,7 +6,21 @@
 #include "stdio.h"
 #include "string.h"
 void SystemInit() {};
-
+#define pi  3.1415926535897932846
+int Total_Distance;
+double Latitude[2] = {0.0 , 0.0} ;
+double Longitude[2] = {0.0 , 0.0} ;
+int f = 0 ;
+double theta;
+double dist;
+double lati;
+double longi;
+double latitude;
+double longitude;
+int degree;
+double min;
+int degree2;
+double min2;
 /**********************prototypes************************************/
 void RGBLED_Init (void);
 void lcd_init(void);
