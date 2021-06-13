@@ -161,8 +161,8 @@ SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
 	UART2_IBRD_R = 104;     /* 16MHz/16=1MHz, 1MHz/104=9600 baud rate */
 	UART2_FBRD_R = 11;      /* fraction part of baud generator regist
 	UART2_CC_R = 0;          /*select system clock*/
-        UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
-        UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
+  UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
+  UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
   /*******************************GPS READ***************************/
   void GPS_READ (void){
 
@@ -170,16 +170,16 @@ SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
 
   degree=lati/100;
 	min=lati-(degree*100);
-	
+
  latitude=degree+(min/60);
 	/***************************/
 	degree2=longi/100;
 	min2=longi-(degree2*100);
-	
+
  longitude=degree2+(min2/60);
 
 }
-	
+
 	/******************************DISTANCE**************************/
 
 	double deg2rad(float deg) {
