@@ -328,20 +328,25 @@ LCD_data('=');
 
 
 	/******loop to keep the distance up to date**********/
-	while(1)
-	{
-
-	LCD_command(0x85); // set the location
-	DistToChar(distance);
-		delay_ms(500);
+	while(x=1)
+		{
+			ReadGpsModule();
+		LCD_command(0x85); // set the location
 
 
-        if ( distance > 100 )
-       {GPIO_PORTF_DATA_R =0x08; }  // green led on
-
-       else GPIO_PORTF_DATA_R &=~0x08;
 
 
-	 }
+	Distance(latitude,longitude);
+	DistToChar(Total_Distance);
 
-}
+
+
+	        if ( Total_Distance > 100 )
+	       {GPIO_PORTF_DATA_R =0x08; }  // green led on
+
+	       else GPIO_PORTF_DATA_R &=~0x08;
+		 }
+		if ( GPIO_PORTF_DATA_R == 0x01 )
+		{ x=0;}
+
+	}
