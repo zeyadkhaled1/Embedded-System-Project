@@ -1,6 +1,10 @@
-#include "C:\Keil/Labware/tm4c123gh6pm.h"
+#include "C:/Keil/Labware/tm4c123gh6pm.h"
 #include "stdint.h"
 #include "math.h"
+#include "stdlib.h"
+#include "stdbool.h"
+#include "stdio.h"
+#include "string.h"
 void SystemInit() {};
 /**********************prototypes************************************/
 void RGBLED_Init (void);
@@ -143,7 +147,7 @@ void DistToChar(int dist) // to convert numbers to characters to print on LCD
 	
 }
 
-/************************************************/
+/*********************************************************************/
 
 int main()
 {
