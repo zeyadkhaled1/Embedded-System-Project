@@ -148,6 +148,16 @@ void DistToChar(int dist) // to convert numbers to characters to print on LCD
 }
 
 /*********************************************************************/
+void gps_init(void)
+{
+SYSCTL_RCGCGPIO_R |= 0x08;
+SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
+ /* enable clock to PORTD  */  //FEDCBA
+ delay_us(1);
+	/* UART0 initialization */
+	UART2_CTL_R = 0;         /* UART5 module disbable */
+	UART2_IBRD_R = 104;     /* 16MHz/16=1MHz, 1MHz/104=9600 baud rate */
+	UART2_FBRD_R = 11;      /* fraction part of baud generator register*/
 
 int main()
 {
@@ -182,16 +192,7 @@ LCD_data('=');
 	 }
 
 }
-void gps_init(void)
-{
-SYSCTL_RCGCGPIO_R |= 0x08;
-SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
- /* enable clock to PORTD  */  //FEDCBA
- delay_us(1);
-  /* UART0 initialization */
-  UART2_CTL_R = 0;         /* UART5 module disbable */
-  UART2_IBRD_R = 104;     /* 16MHz/16=1MHz, 1MHz/104=9600 baud rate */
-  UART2_FBRD_R = 11;      /* fraction part of baud generator register*/
+
 	UART2_CC_R = 0;          /*select system clock*/
   UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
   UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
