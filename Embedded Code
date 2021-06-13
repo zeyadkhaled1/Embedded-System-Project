@@ -122,7 +122,7 @@ GPIO_PORTF_PCTL_R &=~0x0000000F;
 GPIO_PORTF_PUR_R |= 0x01;
 }
 
-/**************************************/
+/*************************************************************/
 
 void DistToChar(int dist) // to convert numbers to characters to print on LCD
 {
@@ -148,6 +148,8 @@ void DistToChar(int dist) // to convert numbers to characters to print on LCD
 }
 
 /*********************************************************************/
+
+/*******************************GPS_intialize******************************/
 void gps_init(void)
 {
 SYSCTL_RCGCGPIO_R |= 0x08;
@@ -157,47 +159,15 @@ SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
 	/* UART0 initialization */
 	UART2_CTL_R = 0;         /* UART5 module disbable */
 	UART2_IBRD_R = 104;     /* 16MHz/16=1MHz, 1MHz/104=9600 baud rate */
-	UART2_FBRD_R = 11;      /* fraction part of baud generator register*/
-
-int main()
-{
-
-RGBLED_Init();
-switch_init();
-lcd_init();
-LCD_command(0X01);	// clear display
-delay_ms(10);
-LCD_command(0x80);  // LCD cursor location
-delay_ms(500);
-LCD_data('D');
-LCD_data('I');
-LCD_data('S');
-LCD_data('T');
-LCD_data('=');
-
-
-	/******loop to keep the distance up to date**********/
-	while(1)
-	{
-	int distance =350; //initialize random distance
-	LCD_command(0x85); // set the location
-	DistToChar(distance);
-		delay_ms(500);
-
-
-        if ( distance > 100 )
-       {GPIO_PORTF_DATA_R =0x08; }  // green led on
-
-       else GPIO_PORTF_DATA_R &=~0x08;
-	 }
-
-}
-
+	UART2_FBRD_R = 11;      /* fraction part of baud generator regist
 	UART2_CC_R = 0;          /*select system clock*/
-  UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
-  UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
+        UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
+        UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
   /*******************************GPS READ***************************/
-  void GPS READ (){
+  void GPS_READ (void){
+
+
+
   degree=lati/100;
 	min=lati-(degree*100);
 	
@@ -255,17 +225,37 @@ LCD_data('=');
 	/************************************************/
 
 	int main()
+{
+
+RGBLED_Init();
+switch_init();
+lcd_init();
+LCD_command(0X01);	// clear display
+delay_ms(10);
+LCD_command(0x80);  // LCD cursor location
+delay_ms(500);
+LCD_data('D');
+LCD_data('I');
+LCD_data('S');
+LCD_data('T');
+LCD_data('=');
+
+
+	/******loop to keep the distance up to date**********/
+	while(1)
 	{
-	 gps_init();
-	RGBLED_Init();
-	switch_init();
-	lcd_init();
-	LCD_command(0X01);	// clear display
-	delay_ms(10);
-	LCD_command(0x80);  // LCD cursor location
-	delay_ms(500);
-	LCD_data('D');
-	LCD_data('I');
-	LCD_data('S');
-	LCD_data('T');
-	LCD_data('=');
+
+	LCD_command(0x85); // set the location
+	DistToChar(distance);
+		delay_ms(500);
+
+
+        if ( distance > 100 )
+       {GPIO_PORTF_DATA_R =0x08; }  // green led on
+
+       else GPIO_PORTF_DATA_R &=~0x08;
+
+
+	 }
+
+}
