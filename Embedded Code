@@ -6,6 +6,7 @@
 #include "stdio.h"
 #include "string.h"
 void SystemInit() {};
+
 /**********************prototypes************************************/
 void RGBLED_Init (void);
 void lcd_init(void);
@@ -163,8 +164,74 @@ SYSCTL_RCGCUART_R |= 0x04;  /* enable clock to UART2 */
 	UART2_CC_R = 0;          /*select system clock*/
   UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
   UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
+
+
   /*******************************GPS READ***************************/
-  void GPS_READ (void){
+ char data;
+ void Read_Data(void)
+{
+while((UART2_FR_R&0x0010) !=0){};
+data= UART2_DR_R&0xFF;
+
+}
+char* ptr;
+int i,j;
+char DATA[50][50];
+char lat1[11];
+char lon1[11];
+char x;
+char*ptr;
+
+int stop;
+
+
+void ReadGpsModule(void){
+	
+
+	Read_Data();
+
+while (data!='$') {Read_Data();};
+	Read_Data();
+while (data!='G') {Read_Data();};
+	Read_Data();
+while (data!='P') {Read_Data();};
+	Read_Data();
+while (data!='G') {Read_Data();};
+	Read_Data();
+while (data!='L') {Read_Data();};
+	Read_Data();
+while (data!='L') {Read_Data();};
+	Read_Data();
+while (data!=',') {Read_Data();};
+	stop = 0;
+       i=0;
+	j=0;
+
+			while (stop==0){
+			Read_Data();
+      if (data==',')
+      {i++;
+       j=0;}
+		  else if (data=='*')
+			{stop=1;}
+		
+			else
+				
+			{	DATA[i][j]=data;
+			 j++;
+			}
+			
+		}
+	
+	for (i=0;i<10; i++)
+	{
+		
+		lat1 [i]=DATA[0][i];
+		lon1 [i]=DATA[2][i];
+		
+	}
+	lati =strtod(lat1,&ptr);
+	longi =strtod(lon1,&ptr);
 
 
 
