@@ -196,6 +196,19 @@ LCD_data('=');
 	UART2_CC_R = 0;          /*select system clock*/
   UART2_LCRH_R = 0x0070;     /* data lenght 8-bit, not parity bit, no FIFO */
   UART2_CTL_R = 0x201;      /* enable UART2, TXE, RXE */
+  /*******************************GPS READ***************************/
+  void GPS READ (){
+  degree=lati/100;
+	min=lati-(degree*100);
+	
+ latitude=degree+(min/60);
+	/***************************/
+	degree2=longi/100;
+	min2=longi-(degree2*100);
+	
+ longitude=degree2+(min2/60);
+
+}
 	
 	/******************************DISTANCE**************************/
 
